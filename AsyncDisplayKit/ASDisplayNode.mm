@@ -48,6 +48,7 @@
 @synthesize flexBasis = _flexBasis;
 @synthesize alignSelf = _alignSelf;
 @synthesize preferredFrameSize = _preferredFrameSize;
+@synthesize layoutGuides = _layoutGuides;
 
 BOOL ASDisplayNodeSubclassOverridesSelector(Class subclass, SEL selector)
 {
@@ -1390,6 +1391,7 @@ static NSInteger incrementIfFound(NSInteger i) {
   ASDN::MutexLocker l(_propertyLock);
   return _preferredFrameSize;
 }
+
 - (UIImage *)placeholderImage
 {
   return nil;

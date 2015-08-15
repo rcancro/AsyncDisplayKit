@@ -24,6 +24,7 @@
 @synthesize flexShrink = _flexShrink;
 @synthesize flexBasis = _flexBasis;
 @synthesize alignSelf = _alignSelf;
+@synthesize layoutGuides = _layoutGuides;
 
 + (instancetype)new
 {

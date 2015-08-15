@@ -58,6 +58,14 @@
 @property (nonatomic, readwrite) ASStackLayoutAlignSelf alignSelf;
 
 /**
+ * @abstract Guides from which spacing will be computed in a stack, inset or center layout.
+ * For example, if the bottom layout guide is set to 5 and the spacing between nodes in a
+ * vertical stack is 10, the final layout will have a spacing of 15. Negative values are
+ * also valid.
+ */
+@property (nonatomic, readwrite) UIEdgeInsets layoutGuides;
+
+/**
  * @abstract Calculate a layout based on given size range.
  *
  * @param constrainedSize The minimum and maximum sizes the receiver should fit in.

@@ -52,6 +52,9 @@
   };
   ASLayout *sublayout = [_child measureWithSizeRange:ASSizeRangeMake(minChildSize, constrainedSize.max)];
 
+  ASDisplayNodeAssert(size.height >= sublayout.size.height + _child.layoutGuides.top + _child.layoutGuides.bottom, @"Constrained size cannot fit the child's layout guides");
+  ASDisplayNodeAssert(size.width >= sublayout.size.height + _child.layoutGuides.right + _child.layoutGuides.left, @"Constrained size cannot fit the child's layout guides");
+  
   // If we have an undetermined height or width, use the child size to define the layout
   // size
   size = ASSizeRangeClamp(constrainedSize, {
@@ -61,16 +64,16 @@
 
   // If minimum size options are set, attempt to shrink the size to the size of the child
   size = ASSizeRangeClamp(constrainedSize, {
-    MIN(size.width, (_sizingOptions & ASCenterLayoutSpecSizingOptionMinimumX) != 0 ? sublayout.size.width : size.width),
-    MIN(size.height, (_sizingOptions & ASCenterLayoutSpecSizingOptionMinimumY) != 0 ? sublayout.size.height : size.height)
+    MIN(size.width, (_sizingOptions & ASCenterLayoutSpecSizingOptionMinimumX) != 0 ? sublayout.size.width + _child.layoutGuides.left + _child.layoutGuides.right : size.width),
+    MIN(size.height, (_sizingOptions & ASCenterLayoutSpecSizingOptionMinimumY) != 0 ? sublayout.size.height + _child.layoutGuides.top + _child.layoutGuides.bottom : size.height)
   });
 
   // Compute the centered postion for the child
   BOOL shouldCenterAlongX = (_centeringOptions & ASCenterLayoutSpecCenteringX);
   BOOL shouldCenterAlongY = (_centeringOptions & ASCenterLayoutSpecCenteringY);
   sublayout.position = {
-    ASRoundPixelValue(shouldCenterAlongX ? (size.width - sublayout.size.width) * 0.5f : 0),
-    ASRoundPixelValue(shouldCenterAlongY ? (size.height - sublayout.size.height) * 0.5f : 0)
+    ASRoundPixelValue(shouldCenterAlongX ? (size.width - sublayout.size.width) * 0.5f + _child.layoutGuides.left : 0),
+    ASRoundPixelValue(shouldCenterAlongY ? (size.height - sublayout.size.height) * 0.5f + _child.layoutGuides.top : 0)
   };
 
   return [ASLayout newWithLayoutableObject:self size:size sublayouts:@[sublayout]];

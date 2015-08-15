@@ -67,13 +67,14 @@ static CGFloat centerInset(CGFloat outer, CGFloat inner)
  */
 - (ASLayout *)measureWithSizeRange:(ASSizeRange)constrainedSize
 {
-  const CGFloat insetsX = (finiteOrZero(_insets.left) + finiteOrZero(_insets.right));
-  const CGFloat insetsY = (finiteOrZero(_insets.top) + finiteOrZero(_insets.bottom));
+  UIEdgeInsets insets = UIEdgeInsetsMake(_insets.top + _child.layoutGuides.top, _insets.left + _child.layoutGuides.left, _insets.bottom + _child.layoutGuides.bottom, _insets.right + _child.layoutGuides.right);
+  const CGFloat insetsX = (finiteOrZero(insets.left) + finiteOrZero(insets.right));
+  const CGFloat insetsY = (finiteOrZero(insets.top) + finiteOrZero(insets.bottom));
 
   // if either x-axis inset is infinite, let child be intrinsic width
-  const CGFloat minWidth = (isinf(_insets.left) || isinf(_insets.right)) ? 0 : constrainedSize.min.width;
+  const CGFloat minWidth = (isinf(insets.left) || isinf(insets.right)) ? 0 : constrainedSize.min.width;
   // if either y-axis inset is infinite, let child be intrinsic height
-  const CGFloat minHeight = (isinf(_insets.top) || isinf(_insets.bottom)) ? 0 : constrainedSize.min.height;
+  const CGFloat minHeight = (isinf(insets.top) || isinf(insets.bottom)) ? 0 : constrainedSize.min.height;
 
   const ASSizeRange insetConstrainedSize = {
     {
@@ -88,17 +89,17 @@ static CGFloat centerInset(CGFloat outer, CGFloat inner)
   ASLayout *sublayout = [_child measureWithSizeRange:insetConstrainedSize];
 
   const CGSize computedSize = ASSizeRangeClamp(constrainedSize, {
-    finite(sublayout.size.width + _insets.left + _insets.right, constrainedSize.max.width),
-    finite(sublayout.size.height + _insets.top + _insets.bottom, constrainedSize.max.height),
+    finite(sublayout.size.width + insets.left + insets.right, constrainedSize.max.width),
+    finite(sublayout.size.height + insets.top + insets.bottom, constrainedSize.max.height),
   });
 
-  const CGFloat x = finite(_insets.left, constrainedSize.max.width -
-                           (finite(_insets.right,
+  const CGFloat x = finite(insets.left, constrainedSize.max.width -
+                           (finite(insets.right,
                                    centerInset(constrainedSize.max.width, sublayout.size.width)) + sublayout.size.width));
 
-  const CGFloat y = finite(_insets.top,
+  const CGFloat y = finite(insets.top,
                            constrainedSize.max.height -
-                           (finite(_insets.bottom,
+                           (finite(insets.bottom,
                                    centerInset(constrainedSize.max.height, sublayout.size.height)) + sublayout.size.height));
   
   sublayout.position = CGPointMake(x, y);
